@@ -8,8 +8,7 @@ import (
 	"time"
 )
 
-func testQueue[T comparable](t *testing.T, t_vals []T, initial T) {
-	q := NewQueue[T]()
+func testQueue[T comparable](t *testing.T, t_vals []T, initial T, q Queue[T]) {
 	t.Run("Sync", func(t *testing.T) {
 		testQueueSync(t, q, t_vals, initial)
 	})
@@ -20,7 +19,7 @@ func testQueue[T comparable](t *testing.T, t_vals []T, initial T) {
 
 func testQueueAsync[T comparable](t *testing.T, q Queue[T], t_vals []T, initial T) {
 	t.Run("InitialState", func(t *testing.T) {
-		assert.GreaterOrEqual(t, len(t_vals), 6)
+		assert.GreaterOrEqual(t, len(t_vals), 4)
 		assert.True(t, q.IsEmpty())
 		assert.False(t, q.IsBlockingEnqueue())
 		assert.False(t, q.IsUnBlocking())
@@ -327,7 +326,7 @@ func testQueueSync[T comparable](t *testing.T, q Queue[T], t_vals []T, initial T
 
 func TestQueue(t *testing.T) {
 	var x int
-	testQueue[int](t, []int{1, 2, 3, 4, 5, 6, 7, 8}, x)
+	testQueue[int](t, []int{1, 2, 3, 4, 5, 6, 7, 8}, x, NewQueue[int]())
 }
 
 func TestQueuePointable(t *testing.T) {
@@ -337,5 +336,20 @@ func TestQueuePointable(t *testing.T) {
 	for _, v := range t_vals {
 		p_t_vals = append(p_t_vals, &v)
 	}
-	testQueue[*int](t, p_t_vals, x)
+	testQueue[*int](t, p_t_vals, x, NewQueue[*int]())
+}
+
+func TestFastQueue(t *testing.T) {
+	var x int
+	testQueue[int](t, []int{1, 2, 3, 4, 5, 6, 7, 8}, x, NewFastQueue[int]())
+}
+
+func TestFastQueuePointable(t *testing.T) {
+	var x *int
+	t_vals := []int{1, 2, 3, 4, 5, 6, 7, 8}
+	p_t_vals := []*int{}
+	for _, v := range t_vals {
+		p_t_vals = append(p_t_vals, &v)
+	}
+	testQueue[*int](t, p_t_vals, x, NewFastQueue[*int]())
 }
