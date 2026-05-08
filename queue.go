@@ -125,7 +125,8 @@ func (q *queue[T]) Peek() *T {
 	if q.head == nil {
 		return nil
 	}
-	return &q.head.value
+	var value = q.head.value
+	return &value
 }
 
 // PeekLast queue value (nil when empty)
@@ -135,7 +136,8 @@ func (q *queue[T]) PeekLast() *T {
 	if q.tail == nil {
 		return nil
 	}
-	return &q.tail.value
+	var value = q.tail.value
+	return &value
 }
 
 // StartUnBlocking the queue allowing Dequeue and Pop to return when no items are present and sets IsBlockingEnqueue
@@ -195,5 +197,7 @@ func (q *queue[T]) Clear() {
 		oHead.value = dValue
 		oHead.next = nil
 	}
+	q.head = nil
+	q.tail = nil
 	q.cond.Broadcast()
 }
