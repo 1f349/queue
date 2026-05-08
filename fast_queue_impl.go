@@ -12,7 +12,7 @@ type fastQueue[T any] struct {
 }
 
 // NewFastQueue creates a new instance of a linked list implementer of the Queue interface
-// where only non-read-only operations are synchronised
+// where only non-read-only operations are synchronised and unreachable data is not cleared directly
 func NewFastQueue[T any]() Queue[T] {
 	lock := &sync.Mutex{}
 	return &fastQueue[T]{
@@ -136,14 +136,6 @@ func (q *fastQueue[T]) IsBlockingEnqueue() bool {
 func (q *fastQueue[T]) Clear() {
 	q.lock.Lock()
 	defer q.lock.Unlock()
-	var dValue T
-	cHead := q.head
-	for cHead != nil {
-		oHead := cHead
-		cHead = oHead.next
-		oHead.value = dValue
-		oHead.next = nil
-	}
 	q.head = nil
 	q.tail = nil
 	q.cond.Broadcast()
