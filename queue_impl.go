@@ -162,5 +162,4 @@ func (q *queue[T]) Clear() {
 	}
 	q.head = nil
 	q.tail = nil
-	q.cond.Broadcast()
 }

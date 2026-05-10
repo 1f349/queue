@@ -138,5 +138,4 @@ func (q *fastQueue[T]) Clear() {
 	defer q.lock.Unlock()
 	q.head = nil
 	q.tail = nil
-	q.cond.Broadcast()
 }
